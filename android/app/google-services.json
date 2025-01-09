@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "730928089268",
+    "project_id": "abro-project-rypve6",
+    "storage_bucket": "abro-project-rypve6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730928089268:android:e4816dbba9a8592c262fe1",
+        "android_client_info": {
+          "package_name": "com.bizconnect.bizapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHQxAyh6Sy1tvx3S3Jf1h1V3NQsRt6wrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730928089268:android:27566ee90669a76e262fe1",
+        "android_client_info": {
+          "package_name": "com.mycompany.abroproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHQxAyh6Sy1tvx3S3Jf1h1V3NQsRt6wrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730928089268:android:e232322ced45fd23262fe1",
+        "android_client_info": {
+          "package_name": "com.mycompany.foodapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHQxAyh6Sy1tvx3S3Jf1h1V3NQsRt6wrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
