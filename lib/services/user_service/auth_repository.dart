@@ -1,3 +1,4 @@
+import 'package:bizconnect/screens/learning/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -61,6 +62,7 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       await firebaseAuth.signOut();
+      Get.offAllNamed(AppRoutes.login);
     } catch (e) {
       throw Exception('Failed to log out: $e');
     }

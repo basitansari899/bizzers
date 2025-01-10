@@ -107,9 +107,11 @@ class UserRegisterPage extends GetView<UserRegisterPageController> {
                         color: Color(0xFFDAA520),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: controller.loading.value
-                          ? CircularProgressIndicator()
-                          : Center(
+                      child: 
+                       controller.loading.value
+                          ? Center(child: CircularProgressIndicator())
+                          : 
+                          Center(
                               child: Text(
                                 'Create Account',
                                 style: TextStyle(

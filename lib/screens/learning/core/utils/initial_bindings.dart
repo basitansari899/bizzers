@@ -1,3 +1,6 @@
+import 'package:bizconnect/screens/home/controllers/explore_controller.dart';
+import 'package:bizconnect/screens/home/controllers/home_controller.dart';
+import 'package:bizconnect/screens/user/user_register_page_controller.dart';
 import 'package:bizconnect/services/user_service/auth_repository.dart';
 import 'package:bizconnect/services/user_service/firestore_repository.dart';
 import 'package:bizconnect/services/user_service/login/login_repository.dart';
@@ -41,5 +44,11 @@ class InitialBindings extends Bindings {
 
     Get.put(PrefUtils());
     Get.put(ApiClient());
+    Get.put(ExploreController());
+    Get.lazyPut(() => HomeController());
+
+
+
+
   }
 }

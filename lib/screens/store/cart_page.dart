@@ -46,7 +46,7 @@ class _CartPageState extends State<CartPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               children: [
-                for(var p in productsList.sublist(4,7))
+                for(var p in productsLists.sublist(4,7))
                 _buildCartItem(
                   title: p.title,
                   size: 'M',

@@ -1,4 +1,5 @@
 import 'package:bizconnect/screens/home/bottom_bar_page.dart';
+import 'package:bizconnect/screens/learning/core/app_export.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -20,7 +21,9 @@ class _SplashScreenState extends State<SplashScreen> {
       if (uid != null) {
         Get.offAll(() => BottomBarPage());
       } else {
-        Get.offAll(() => BoardingScreen());
+        // Get.offAll(() => BoardingScreen());
+        Get.offAllNamed(AppRoutes.login);
+
       }
     });
     super.initState();

@@ -1,4 +1,4 @@
-import 'package:bizconnect/screens/home/bottom_bar_page.dart';
+import 'package:bizconnect/res/mixin_loading.dart';
 import 'package:bizconnect/screens/user/registor_otp_page.dart';
 import 'package:bizconnect/services/user_service/profile/model/user_data.dart';
 import 'package:bizconnect/services/user_service/register/register_repository.dart';
@@ -6,8 +6,8 @@ import 'package:bizconnect/utils/exports.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserRegisterPageController extends GetxController {
-  UserRegisterPageController({required this.registerRepository});
+class ProfileController extends GetxController with LoadingMixin{
+  ProfileController({required this.registerRepository});
   GlobalKey<FormState> signUpKey = GlobalKey<FormState>();
    GlobalKey<FormState> profile = GlobalKey<FormState>();
 
@@ -17,7 +17,7 @@ class UserRegisterPageController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  RxBool loading = RxBool(false);
+  // RxBool loading = RxBool(false);
   RxBool isChecked = RxBool(false);
 
   final fullNameController = TextEditingController();
@@ -33,6 +33,7 @@ class UserRegisterPageController extends GetxController {
 
   @override
   void onInit() {
+    fetchAndSetUserData();
     super.onInit();
   }
 
@@ -105,7 +106,7 @@ void setUserData(Map<String, dynamic> userData) {
       if (result == "Success") {
         Get.snackbar("Success", "User register successfully", backgroundColor: Colors.green);
         loading.value = false;
-        Get.to(() => BottomBarPage());
+        Get.to(() => RegistorOtpPage());
       } else {
         Get.snackbar("Error", result, backgroundColor: Colors.red);
       }

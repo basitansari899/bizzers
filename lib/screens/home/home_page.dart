@@ -1,4 +1,6 @@
+import 'package:bizconnect/screens/home/controllers/post_model.dart';
 import 'package:bizconnect/widgets/home/home_app_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../utils/exports.dart';
 import '../../widgets/global/post_widget.dart';
@@ -18,12 +20,31 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: HomeAppBar(title: "Home"),
       drawer: UserDrawerWidget(),
-      body: ListView(
+      body: StreamBuilder<QuerySnapshot>(
+    stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      }
+
+      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        return Center(child: Text("No posts available"));
+      }
+
+      final posts = snapshot.data!.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return PostModel.fromJson(doc.id, data); // Convert Firestore data to PostModel
+      }).toList();
+
+      return ListView(
         children: [
           HomeStoriesWidget(),
-          for (int i = 0; i < 30; i++) PostWidget(),
+          ...posts.map((post) => PostWidget(post: post)).toList(),
         ],
-      ),
+      );
+    },
+  )
+
     );
   }
 }

@@ -1,5 +1,7 @@
+import 'package:bizconnect/screens/settings/account_settings_page.dart';
 import 'package:bizconnect/screens/user/login_page.dart';
 import 'package:bizconnect/screens/user/login_page_binding.dart';
+import 'package:bizconnect/screens/user/profile_page_binding.dart';
 import 'package:bizconnect/screens/user/user_register_page.dart';
 import 'package:bizconnect/screens/user/user_register_page_binding.dart';
 
@@ -80,6 +82,8 @@ class AppRoutes {
 
   static const String login = '/login';
   static const String singUp = '/sign_up';
+  static const String acount = '/acount';
+
 
   static const String logInScreen = '/log_in_screen';
 
@@ -192,6 +196,11 @@ class AppRoutes {
       name: singUp,
       page: () => const UserRegisterPage(),
       binding: UserRegisterPageBinding(),
+    ),
+    GetPage(
+      name: acount,
+      page: () => const AccountSettingsPage(),
+      binding: ProfilePageBinding(),
     ),
     GetPage(
       transition: Transition.rightToLeft,

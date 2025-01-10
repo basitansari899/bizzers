@@ -7,21 +7,16 @@ import '../../screens/globals/product_details_page.dart';
 import '../../utils/exports.dart';
 import '../global/show_rating_widget.dart';
 
-class SingleListProductWidget extends StatefulWidget {
+class SingleListProductWidget extends StatelessWidget {
   final ProductModel product;
   const SingleListProductWidget({super.key, required this.product});
 
   @override
-  State<SingleListProductWidget> createState() => _SingleListProductWidgetState();
-}
-
-class _SingleListProductWidgetState extends State<SingleListProductWidget> {
-  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.to(() => ProductDetailsPage(product: widget.product)),
+      onTap: () => Get.to(() => ProductDetailsPage(product: product)),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         width: 368.92,
         height: 111.86,
         decoration: BoxDecoration(
@@ -52,7 +47,7 @@ class _SingleListProductWidgetState extends State<SingleListProductWidget> {
         bottomLeft: Radius.circular(8.6),
       ),
       child: Image.network(
-        widget.product.images.first,
+        product.images.first,
         width: 111.86,
         height: 111.86,
         fit: BoxFit.cover,
@@ -61,7 +56,6 @@ class _SingleListProductWidgetState extends State<SingleListProductWidget> {
   }
 
   Widget _productDetails() {
-    final v  = Random().nextInt(5);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(
@@ -69,7 +63,7 @@ class _SingleListProductWidgetState extends State<SingleListProductWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
-            "${widget.product.title}",
+            product.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.manrope(
@@ -79,16 +73,16 @@ class _SingleListProductWidgetState extends State<SingleListProductWidget> {
             ),
           ),
           Text(
-            'Dorothy Perkins',
+            product.brand,
             style: GoogleFonts.manrope(
               color: Color(0xFF9B9B9B),
               fontSize: 11.83,
               fontWeight: FontWeight.normal,
             ),
           ),
-          RatingNoPoints(ratingCount: v,),
+          RatingNoPoints(ratingCount: Random().nextInt(5)),
           Text(
-            "\$${widget.product.price}",
+            "\$${product.price}",
             style: GoogleFonts.manrope(
               color: Color(0xFF212121),
               fontSize: 15.06,
@@ -100,3 +94,4 @@ class _SingleListProductWidgetState extends State<SingleListProductWidget> {
     );
   }
 }
+

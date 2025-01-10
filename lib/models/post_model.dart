@@ -28,7 +28,7 @@ class ContentModel {
   }
 }
 
-class PostModel {
+class PostModels {
   final String id;
   final String userId;
   final List<ContentModel> contents;
@@ -43,7 +43,7 @@ class PostModel {
   final bool isLiked;
   final bool isBookmarked;
 
-  PostModel({
+  PostModels({
     required this.id,
     required this.userId,
     required this.contents,
@@ -60,8 +60,8 @@ class PostModel {
   })  : createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
-  factory PostModel.fromJson(Map<String, dynamic> json) {
-    return PostModel(
+  factory PostModels.fromJson(Map<String, dynamic> json) {
+    return PostModels(
       id: json['id'] as String,
       userId: json['userId'] as String,
       contents: (json['contents'] as List<dynamic>?)

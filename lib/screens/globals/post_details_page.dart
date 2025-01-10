@@ -14,7 +14,8 @@ import '../../widgets/global/comment_widget.dart';
 import '../../widgets/global/post_widget.dart';
 
 class PostDetailsPage extends StatefulWidget {
-  const PostDetailsPage({super.key});
+ final String postId;
+  const PostDetailsPage({super.key, this.postId = '1'});
 
   @override
   State<PostDetailsPage> createState() => _PostDetailsPageState();
@@ -87,7 +88,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
         child: ListView(
           children: [
             postContent(),
-            WidgetPostCommentBar(),
+            WidgetPostCommentBar(postId: widget.postId,postCounts: 1234,),
             postText(),
             SizedBox(height: 14,),
             AddCommentWidget(),

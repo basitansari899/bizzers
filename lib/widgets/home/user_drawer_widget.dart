@@ -1,5 +1,7 @@
+import 'package:bizconnect/screens/learning/routes/app_routes.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:faker_dart/faker_dart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../screens/learning/presentation/home_screen_container_screen/home_screen_container_screen.dart';
 import '../../screens/settings/account_settings_page.dart';
 import '../../utils/exports.dart';
@@ -12,6 +14,7 @@ class UserDrawerWidget extends StatefulWidget {
 }
 
 class _UserDrawerWidgetState extends State<UserDrawerWidget> {
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -48,7 +51,7 @@ class _UserDrawerWidgetState extends State<UserDrawerWidget> {
                 padding: EdgeInsets.zero,
                 children: [
                   InkWell(
-                    onTap: () => Get.to(() => AccountSettingsPage()),
+                    onTap: () => Get.toNamed(AppRoutes.acount),
                     child: DrawerItem(
                       icon: BootstrapIcons.person,
                       title: "Account",
@@ -106,9 +109,26 @@ class _UserDrawerWidgetState extends State<UserDrawerWidget> {
                     icon: BootstrapIcons.question_circle,
                     title: "Help",
                   ),
-                  DrawerItem(
-                    icon: BootstrapIcons.box_arrow_right,
-                    title: "Log Out",
+                  InkWell(
+                    onTap: () async {
+    try {
+      // Ensure that firebaseAuth is not null before proceeding
+      if (firebaseAuth.currentUser != null) {
+        await firebaseAuth.signOut();
+        Get.offAllNamed(AppRoutes.login); // Navigate to login screen after sign-out
+      } else {
+        throw Exception('No user is currently logged in.');
+      }
+    } catch (e) {
+      // Display a more informative error message
+      Get.snackbar('Logout Failed', 'Error: $e', snackPosition: SnackPosition.BOTTOM);
+      print('Error during logout: $e');
+    }
+  },
+                    child: DrawerItem(
+                      icon: BootstrapIcons.box_arrow_right,
+                      title: "Log Out",
+                    ),
                   ),
                 ],
               ),

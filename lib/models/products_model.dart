@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CategoryModel {
   final int id;
   final String name;
@@ -25,14 +27,15 @@ class CategoryModel {
 }
 
 class ProductModel {
-  final int id;
+  final String id;
   final String title;
   final double price;
   final String description;
   final List<String> images;
   final DateTime creationAt;
   final DateTime updatedAt;
-  final CategoryModel category;
+  final String category;  // Changed to String
+  final String brand;     // Added brand
 
   ProductModel({
     required this.id,
@@ -43,6 +46,7 @@ class ProductModel {
     required this.creationAt,
     required this.updatedAt,
     required this.category,
+    required this.brand,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -52,15 +56,16 @@ class ProductModel {
       price: json['price'].toDouble(),
       description: json['description'],
       images: List<String>.from(json['images']),
-      creationAt: DateTime.parse(json['creationAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      category: CategoryModel.fromJson(json['category']),
+      creationAt: (json['createdAt'] as Timestamp).toDate(), // Converting Timestamp to DateTime
+      updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+      category: json['category'],  // Directly using string for category
+      brand: json['brand'],        // Added brand field
     );
   }
 }
 
 
-List pJsons = [
+List pJsonss = [
   {
     "id": 2,
     "title": "Classic Red Pullover Hoodie",
@@ -999,4 +1004,4 @@ List pJsons = [
     }
   },
 ];
-List<ProductModel> productsList = pJsons.map((m) => ProductModel.fromJson(m)).toList();
+List<ProductModel> productsLists = pJsonss.map((m) => ProductModel.fromJson(m)).toList();

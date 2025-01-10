@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:bizconnect/models/post_model.dart';
+import 'package:bizconnect/screens/home/controllers/post_like_controller.dart';
+import 'package:bizconnect/screens/home/controllers/post_model.dart';
 import 'package:bizconnect/widgets/global/widget_post_comment_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,14 +12,175 @@ import '../../screens/globals/post_details_page.dart';
 import '../../screens/globals/profile_page.dart';
 import '../../utils/exports.dart';
 
-class PostWidget extends StatefulWidget {
-  const PostWidget({super.key});
+// class PostWidget extends StatefulWidget {
+//   const PostWidget({super.key});
 
-  @override
-  State<PostWidget> createState() => _PostWidgetState();
-}
+//   @override
+//   State<PostWidget> createState() => _PostWidgetState();
+// }
 
-class _PostWidgetState extends State<PostWidget> {
+// class _PostWidgetState extends State<PostWidget> {
+//   @override
+//   Widget build(BuildContext context) {
+//     Widget userWidget() {
+//       return Container(
+//         padding: EdgeInsets.only(top: 11, left: 11, right: 11),
+//         child: Row(
+//           children: [
+//             Container(
+//               width: 45.20,
+//               height: 45.20,
+//               decoration: ShapeDecoration(
+//                 image: DecorationImage(
+//                   image: NetworkImage(
+//                     Faker.instance.image.image(width: 200, height: 200),
+//                   ),
+//                   fit: BoxFit.cover,
+//                 ),
+//                 shape: OvalBorder(),
+//               ),
+//             ),
+//             SizedBox(width: 12),
+//             InkWell(
+//               onTap: () => Get.to(() => ProfileScreen()),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     Faker.instance.name.fullName(),
+//                     style: GoogleFonts.manrope(
+//                       color: Color(0xFF121212),
+//                       fontSize: 13.70,
+//                       fontWeight: FontWeight.w700,
+//                     ),
+//                   ),
+//                   Text(
+//                     "@${Faker.instance.name.firstName()}",
+//                     style: GoogleFonts.manrope(
+//                       color: Colors.black,
+//                       fontSize: 11.59,
+//                       fontWeight: FontWeight.w400,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             Spacer(),
+//             InkWell(
+//               onTap: () {},
+//               child: Container(
+//                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+//                 decoration: BoxDecoration(
+//                   color: primaryColor,
+//                   borderRadius: BorderRadius.circular(8),
+//                 ),
+//                 child: Text(
+//                   "Follow",
+//                   style: GoogleFonts.manrope(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       );
+//     }
+
+//     Widget postText() {
+//       return Container(
+//         padding: EdgeInsets.all(11),
+//         child: ReadMoreText(
+//           texts[Random.secure().nextInt(texts.length - 1)],
+//           trimMode: TrimMode.Line,
+//           trimLines: 2,
+//           annotations: [
+//             Annotation(
+//               regExp: RegExp(r'#([a-zA-Z0-9_]+)'),
+//               spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
+//                 text: text,
+//                 style: textStyle?.copyWith(color: primaryColor),
+//               ),
+//             ),
+//             Annotation(
+//               regExp: RegExp(r'<@(\d+)>'),
+//               spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
+//                 text: "@${Faker.instance.name.firstName()}",
+//                 style: textStyle?.copyWith(color: primaryColor),
+//                 recognizer: TapGestureRecognizer()
+//                   ..onTap = () {
+//                     // Handle tap, e.g., navigate to a user profile
+//                   },
+//               ),
+//             ),
+//             // Additional annotations for URLs...
+//           ],
+//           moreStyle: GoogleFonts.manrope(
+//             color: Color(0xFF121212),
+//             fontSize: 13.40,
+//             fontWeight: FontWeight.w500,
+//           ),
+//         ),
+//       );
+//     }
+
+//     Widget postContent() {
+//       return Container(
+//         width: Get.width,
+//         height: 346,
+//         decoration: ShapeDecoration(
+//           image: DecorationImage(
+//             image: NetworkImage(
+//               Faker.instance.image.image(
+//                 width: Get.width.toInt(),
+//                 height: 346,
+//               ),
+//             ),
+//             fit: BoxFit.cover,
+//           ),
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(12.50),
+//           ),
+//         ),
+//       );
+//     }
+
+//     return GestureDetector(
+//       onTap: () => Get.to(() => PostDetailsPage()),
+//       child: Container(
+//         margin: EdgeInsets.all(8),
+//         decoration: ShapeDecoration(
+//           color: Color(0xFFFFF7E7),
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(3),
+//           ),
+//           shadows: [
+//             BoxShadow(
+//               color: Color(0x26000000),
+//               blurRadius: 9.52,
+//               offset: Offset(0, 0),
+//               spreadRadius: 0,
+//             )
+//           ],
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             userWidget(),
+//             postText(),
+//             postContent(),
+//             SizedBox(height: 5),
+//             WidgetPostCommentBar(),
+//             SizedBox(height: 5),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+class PostWidget extends StatelessWidget {
+  final PostModel post;
+
+  const PostWidget({Key? key, required this.post}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     Widget userWidget() {
@@ -29,9 +193,7 @@ class _PostWidgetState extends State<PostWidget> {
               height: 45.20,
               decoration: ShapeDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(
-                    Faker.instance.image.image(width: 200, height: 200),
-                  ),
+                  image: NetworkImage(post.userImage),
                   fit: BoxFit.cover,
                 ),
                 shape: OvalBorder(),
@@ -39,12 +201,14 @@ class _PostWidgetState extends State<PostWidget> {
             ),
             SizedBox(width: 12),
             InkWell(
-              onTap: () => Get.to(() => ProfileScreen()),
+              onTap: () => Get.to(() => ProfileScreen(
+                // userId: post.userId
+                )), // Pass userId if required
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    Faker.instance.name.fullName(),
+                    post.name,
                     style: GoogleFonts.manrope(
                       color: Color(0xFF121212),
                       fontSize: 13.70,
@@ -52,7 +216,7 @@ class _PostWidgetState extends State<PostWidget> {
                     ),
                   ),
                   Text(
-                    "@${Faker.instance.name.firstName()}",
+                    "@${post.username}",
                     style: GoogleFonts.manrope(
                       color: Colors.black,
                       fontSize: 11.59,
@@ -73,7 +237,11 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
                 child: Text(
                   "Follow",
-                  style: GoogleFonts.manrope(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+                  style: GoogleFonts.manrope(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
@@ -86,30 +254,9 @@ class _PostWidgetState extends State<PostWidget> {
       return Container(
         padding: EdgeInsets.all(11),
         child: ReadMoreText(
-          texts[Random.secure().nextInt(texts.length - 1)],
+          post.postDescription,
           trimMode: TrimMode.Line,
           trimLines: 2,
-          annotations: [
-            Annotation(
-              regExp: RegExp(r'#([a-zA-Z0-9_]+)'),
-              spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
-                text: text,
-                style: textStyle?.copyWith(color: primaryColor),
-              ),
-            ),
-            Annotation(
-              regExp: RegExp(r'<@(\d+)>'),
-              spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
-                text: "@${Faker.instance.name.firstName()}",
-                style: textStyle?.copyWith(color: primaryColor),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    // Handle tap, e.g., navigate to a user profile
-                  },
-              ),
-            ),
-            // Additional annotations for URLs...
-          ],
           moreStyle: GoogleFonts.manrope(
             color: Color(0xFF121212),
             fontSize: 13.40,
@@ -125,12 +272,7 @@ class _PostWidgetState extends State<PostWidget> {
         height: 346,
         decoration: ShapeDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-              Faker.instance.image.image(
-                width: Get.width.toInt(),
-                height: 346,
-              ),
-            ),
+            image: NetworkImage(post.postImage),
             fit: BoxFit.cover,
           ),
           shape: RoundedRectangleBorder(
@@ -141,7 +283,10 @@ class _PostWidgetState extends State<PostWidget> {
     }
 
     return GestureDetector(
-      onTap: () => Get.to(() => PostDetailsPage()),
+      onTap: () {},
+      // Get.to(() => PostDetailsPage(
+      //   // post: post
+      //   )), // Pass the post model
       child: Container(
         margin: EdgeInsets.all(8),
         decoration: ShapeDecoration(
@@ -163,9 +308,18 @@ class _PostWidgetState extends State<PostWidget> {
           children: [
             userWidget(),
             postText(),
-            postContent(),
+            InkWell(
+              onTap: ()=>  Get.to(() => PostDetailsPage(
+      //   // post: post
+        )), 
+              child: postContent()),
             SizedBox(height: 5),
-            WidgetPostCommentBar(),
+            GetBuilder<PostLikeController>(
+              init: PostLikeController(postId: post.postId),
+              builder: (controller) {
+                return WidgetPostCommentBar(postCounts: post.likesCount,postId: post.postId,);
+              }
+            ),
             SizedBox(height: 5),
           ],
         ),

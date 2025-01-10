@@ -1,4 +1,4 @@
-package com.bizconnect.bizapp
+package com.bizconnect.bizconnect
 
 import io.flutter.embedding.android.FlutterActivity
 
