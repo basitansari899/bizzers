@@ -5,6 +5,8 @@ part 'user_data.g.dart';
 @JsonSerializable()
 class UserData {
   final String? userName;
+  final String? userPic;
+  final String userId;
   final String fullName;
   final String email;
   final String password;
@@ -16,9 +18,11 @@ class UserData {
 
   const UserData({
     required this.fullName,
+    required this.userId,
     required this.email,
     required this.password,
     required this.interest,
+    this.userPic,
     this.userName,
     this.dateOfBirth,
     this.country,

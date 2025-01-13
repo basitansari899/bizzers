@@ -1,8 +1,7 @@
-import 'dart:math';
-
+import 'package:bizconnect/screens/home/controllers/post_comment_controller.dart';
+import 'package:bizconnect/screens/home/controllers/post_model.dart';
 import 'package:bizconnect/widgets/global/widget_post_comment_bar.dart';
 import 'package:bizconnect/widgets/global/user_app_bar.dart';
-import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readmore/readmore.dart';
@@ -11,11 +10,10 @@ import '../../models/comment_model.dart';
 import '../../utils/exports.dart';
 import '../../widgets/global/add_comment_widget.dart';
 import '../../widgets/global/comment_widget.dart';
-import '../../widgets/global/post_widget.dart';
 
 class PostDetailsPage extends StatefulWidget {
- final String postId;
-  const PostDetailsPage({super.key, this.postId = '1'});
+  final PostModel post;
+  const PostDetailsPage({super.key, required this.post});
 
   @override
   State<PostDetailsPage> createState() => _PostDetailsPageState();
@@ -24,34 +22,32 @@ class PostDetailsPage extends StatefulWidget {
 class _PostDetailsPageState extends State<PostDetailsPage> {
   @override
   Widget build(BuildContext context) {
-
+    final postCommentController = Get.find<PostCommentController>();
     Widget postText() {
       return Container(
         padding: EdgeInsets.all(11),
         child: ReadMoreText(
-          texts[Random.secure().nextInt(texts.length - 1)],
+          widget.post.postDescription,
           trimMode: TrimMode.Line,
           trimLines: 2,
           annotations: [
             Annotation(
               regExp: RegExp(r'#([a-zA-Z0-9_]+)'),
-              spanBuilder: ({required String text, TextStyle? textStyle}) =>
-                  TextSpan(
-                    text: text,
-                    style: textStyle?.copyWith(color: primaryColor),
-                  ),
+              spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
+                text: text,
+                style: textStyle?.copyWith(color: primaryColor),
+              ),
             ),
             Annotation(
               regExp: RegExp(r'<@(\d+)>'),
-              spanBuilder: ({required String text, TextStyle? textStyle}) =>
-                  TextSpan(
-                    text: "@${Faker.instance.name.firstName()}",
-                    style: textStyle?.copyWith(color: primaryColor),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // Handle tap, e.g., navigate to a user profile
-                      },
-                  ),
+              spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
+                text: "@${Faker.instance.name.firstName()}",
+                style: textStyle?.copyWith(color: primaryColor),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // Handle tap, e.g., navigate to a user profile
+                  },
+              ),
             ),
             // Additional annotations for URLs...
           ],
@@ -70,36 +66,57 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
         height: 346,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-              Faker.instance.image.image(
-                width: Get.width.toInt(),
-                height: 346,
-              ),
-            ),
+            image: NetworkImage(widget.post.postImage),
             fit: BoxFit.cover,
           ),
         ),
       );
     }
+
     return Scaffold(
-      appBar: UserAppBarWidget(),
+      appBar: UserAppBarWidget(
+        userPic: widget.post.userImage,
+        name: widget.post.name,
+        userName: widget.post.username,
+      ),
       body: Container(
         margin: EdgeInsets.all(14),
         child: ListView(
           children: [
             postContent(),
-            WidgetPostCommentBar(postId: widget.postId,postCounts: 1234,),
+            WidgetPostCommentBar(post: widget.post),
             postText(),
-            SizedBox(height: 14,),
-            AddCommentWidget(),
-            SizedBox(height: 14,),
-            for(var c in comments)
-              Column(
-                children: [
-                  CommentWidget(comment: c),
-                  Divider(),
-                ],
-              ),
+            SizedBox(
+              height: 14,
+            ),
+            AddCommentWidget(userPic: widget.post.userImage),
+            SizedBox(height: 14),
+            StreamBuilder<List<CommentModel>>(
+              stream: postCommentController.getThisPostComments(widget.post.postId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}'); // Display error if there's any
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No comments available'); // Handle case with no comments
+                }
+
+                // Build the list of comments
+                return Column(
+                  children: snapshot.data!.map((c) {
+                    return Column(
+                      children: [
+                        CommentWidget(comment: c),
+                        Divider(),
+                      ],
+                    );
+                  }).toList(),
+                );
+              },
+            )
           ],
         ),
       ),

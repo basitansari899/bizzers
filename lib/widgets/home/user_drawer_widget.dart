@@ -1,9 +1,7 @@
 import 'package:bizconnect/screens/learning/routes/app_routes.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:faker_dart/faker_dart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../screens/learning/presentation/home_screen_container_screen/home_screen_container_screen.dart';
-import '../../screens/settings/account_settings_page.dart';
 import '../../utils/exports.dart';
 
 class UserDrawerWidget extends StatefulWidget {

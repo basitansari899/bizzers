@@ -1,10 +1,17 @@
-import 'package:faker_dart/faker_dart.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/exports.dart';
 
 class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  const UserAppBarWidget({super.key});
+  const UserAppBarWidget({
+    super.key,
+    required this.userPic,
+    required this.name,
+    required this.userName,
+  });
+  final String userPic;
+  final String name;
+  final String userName;
   @override
   Widget build(BuildContext context) {
     Widget userWidget() {
@@ -16,7 +23,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             decoration: ShapeDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  Faker.instance.image.image(width: 200, height: 200),
+                  userPic,
                 ),
                 fit: BoxFit.cover,
               ),
@@ -28,7 +35,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                Faker.instance.name.fullName(),
+                name,
                 style: GoogleFonts.manrope(
                   color: Color(0xFF121212),
                   fontSize: 13.70,
@@ -36,7 +43,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               Text(
-                "@${Faker.instance.name.firstName()}",
+                "@$userName",
                 style: GoogleFonts.manrope(
                   color: Colors.black,
                   fontSize: 11.59,
@@ -48,6 +55,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         ],
       );
     }
+
     return AppBar(
       centerTitle: false,
       surfaceTintColor: Colors.white,

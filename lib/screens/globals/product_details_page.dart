@@ -37,8 +37,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               _logic.product.title,
-              style: GoogleFonts.manrope(
-                  fontSize: 24, fontWeight: FontWeight.bold),
+              style: GoogleFonts.manrope(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
           Container(
@@ -48,8 +47,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 Text(
                   '\$${_logic.product.price}',
                   style: GoogleFonts.manrope(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -75,7 +74,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             child: Row(
               children: [
                 InkWell(
-                  onTap: (){},
+                  onTap: () {},
                   child: Container(
                       width: 110.73,
                       alignment: Alignment.center,
@@ -88,9 +87,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         ),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                       ),
-                      child: Text('Buy Now',style: GoogleFonts.manrope(
-                        color: Colors.white,
-                      ),)),
+                      child: Text(
+                        'Buy Now',
+                        style: GoogleFonts.manrope(
+                          color: Colors.white,
+                        ),
+                      )),
                 ),
                 const SizedBox(width: 8),
                 GestureDetector(
@@ -105,9 +107,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      child: Text('Add to Cart',style: GoogleFonts.manrope(
-                        color: primaryColor,
-                      ))),
+                      child: Text('Add to Cart',
+                          style: GoogleFonts.manrope(
+                            color: primaryColor,
+                          ))),
                 ),
               ],
             ),
@@ -117,46 +120,51 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'Select Size',
-              style:
-                  GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold),
+              style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 8),
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: _buildSizeOptions()),
+          Container(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildSizeOptions()),
           const SizedBox(height: 16),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'Select Colors',
-              style:
-                  GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold),
+              style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 8),
           Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: _buildColorOptions()),
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: _buildColorOptions(),
+          ),
           const SizedBox(height: 16),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'Description',
-              style:
-                  GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold),
+              style: GoogleFonts.manrope(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(height: 8),
           Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(_logic.product.description)),
-          SizedBox(height: 14,),
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(_logic.product.description),
+          ),
+          SizedBox(
+            height: 14,
+          ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
-              child: AddCommentWidget()),
-          SizedBox(height: 14,),
-          for(var c in comments)
+            child: AddCommentWidget(),
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          for (var c in comments)
             Column(
               children: [
                 CommentWidget(comment: c),
@@ -250,9 +258,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               color: color,
               shape: BoxShape.circle,
               border: Border.all(
-                color: _logic.selectedColor == color
-                    ? Colors.black
-                    : Colors.transparent,
+                color: _logic.selectedColor == color ? Colors.black : Colors.transparent,
                 width: 2,
               ),
             ),
@@ -272,8 +278,7 @@ class ProductDetailsLogic {
 
   List<String> get sizes => ['XS', 'S', 'M', 'L', 'XL'];
 
-  List<Color> get colors =>
-      [Colors.purple, Colors.red, Colors.yellow, Colors.blue, Colors.black];
+  List<Color> get colors => [Colors.purple, Colors.red, Colors.yellow, Colors.blue, Colors.black];
 
   ProductDetailsLogic(this.product);
 }

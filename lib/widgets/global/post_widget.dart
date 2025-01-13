@@ -1,10 +1,5 @@
-import 'dart:math';
-
-import 'package:bizconnect/models/post_model.dart';
-import 'package:bizconnect/screens/home/controllers/post_like_controller.dart';
 import 'package:bizconnect/screens/home/controllers/post_model.dart';
 import 'package:bizconnect/widgets/global/widget_post_comment_bar.dart';
-import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readmore/readmore.dart';
 
@@ -178,8 +173,7 @@ import '../../utils/exports.dart';
 // }
 class PostWidget extends StatelessWidget {
   final PostModel post;
-
-  const PostWidget({Key? key, required this.post}) : super(key: key);
+  const PostWidget({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -202,8 +196,8 @@ class PostWidget extends StatelessWidget {
             SizedBox(width: 12),
             InkWell(
               onTap: () => Get.to(() => ProfileScreen(
-                // userId: post.userId
-                )), // Pass userId if required
+                  userId: post.userId
+                  )), // Pass userId if required
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -309,17 +303,11 @@ class PostWidget extends StatelessWidget {
             userWidget(),
             postText(),
             InkWell(
-              onTap: ()=>  Get.to(() => PostDetailsPage(
-      //   // post: post
-        )), 
-              child: postContent()),
-            SizedBox(height: 5),
-            GetBuilder<PostLikeController>(
-              init: PostLikeController(postId: post.postId),
-              builder: (controller) {
-                return WidgetPostCommentBar(postCounts: post.likesCount,postId: post.postId,);
-              }
+              onTap: () => Get.to(() => PostDetailsPage(post: post)),
+              child: postContent(),
             ),
+            SizedBox(height: 5),
+            WidgetPostCommentBar(post: post),
             SizedBox(height: 5),
           ],
         ),

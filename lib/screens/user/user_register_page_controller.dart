@@ -9,11 +9,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 class UserRegisterPageController extends GetxController {
   UserRegisterPageController({required this.registerRepository});
   GlobalKey<FormState> signUpKey = GlobalKey<FormState>();
-   GlobalKey<FormState> profile = GlobalKey<FormState>();
+  GlobalKey<FormState> profile = GlobalKey<FormState>();
 
   final RegisterRepository registerRepository;
-   FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -27,9 +27,7 @@ class UserRegisterPageController extends GetxController {
   final countrController = TextEditingController();
   Rx<String?> selectedCountry = Rx(null);
 
-
   List<String> countries = ['United Arab Emirates', 'United States', 'Canada', 'India'];
-
 
   @override
   void onInit() {
@@ -64,38 +62,40 @@ class UserRegisterPageController extends GetxController {
     return null;
   }
 
-
   void fetchAndSetUserData() async {
     String userId = auth.currentUser!.uid;
-  try {
-    final docPath = '/users/$userId/profile/$userId';
-    final snapshot = await FirebaseFirestore.instance.doc(docPath).get();
+    try {
+      final docPath = '/users/$userId/profile/$userId';
+      final snapshot = await FirebaseFirestore.instance.doc(docPath).get();
 
-    if (snapshot.exists) {
-      final userData = snapshot.data() as Map<String, dynamic>;
-      setUserData(userData);
-    } else {
-      Get.snackbar('Error', 'User data does not exist');
+      if (snapshot.exists) {
+        final userData = snapshot.data() as Map<String, dynamic>;
+        setUserData(userData);
+      } else {
+        Get.snackbar('Error', 'User data does not exist');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch user data: $e');
     }
-  } catch (e) {
-    Get.snackbar('Error', 'Failed to fetch user data: $e');
   }
-}
-void setUserData(Map<String, dynamic> userData) {
-  fullNameController.text = userData['fullName'] ?? '';
-  userNameController.text = userData['userName'] ?? '';
-  dobController.text = userData['dateOfBirth'] ?? '';
-  useremailController.text = userData['email'] ?? '';
-  countrController.text = userData['country'] ?? '';
-  selectedCountry.value = userData['country']; // 
-}
- Future<void> signUp() async {
+
+  void setUserData(Map<String, dynamic> userData) {
+    fullNameController.text = userData['fullName'] ?? '';
+    userNameController.text = userData['userName'] ?? '';
+    dobController.text = userData['dateOfBirth'] ?? '';
+    useremailController.text = userData['email'] ?? '';
+    countrController.text = userData['country'] ?? '';
+    selectedCountry.value = userData['country']; //
+  }
+
+  Future<void> signUp() async {
     if (signUpKey.currentState!.validate()) {
       loading.value = true;
 
       final dataObject = UserData(
         fullName: nameController.text,
         email: emailController.text.toLowerCase(),
+        userId: '',
         password: passwordController.text,
         interest: [""],
       );
@@ -113,41 +113,40 @@ void setUserData(Map<String, dynamic> userData) {
     }
   }
 
+  Future<void> updateProfile() async {
+    String userId = auth.currentUser!.uid;
+    if (profile.currentState!.validate()) {
+      loading.value = true;
 
-Future<void> updateProfile() async {
-      String userId = auth.currentUser!.uid;
-  if (profile.currentState!.validate()) {
-    loading.value = true;
+      try {
+        // Construct the document path
+        String docPath = '/users/$userId/profile/$userId';
 
-    try {
-      // Construct the document path
-      String docPath = '/users/$userId/profile/$userId';
+        // Prepare the updated data
+        Map<String, dynamic> updatedData = {
+          'fullName': fullNameController.text.trim(),
+          'userName': userNameController.text.trim(),
+          'dateOfBirth': dobController.text.trim(),
+          'country': selectedCountry.value ?? '',
+        };
 
-      // Prepare the updated data
-      Map<String, dynamic> updatedData = {
-        'fullName': fullNameController.text.trim(),
-        'userName': userNameController.text.trim(),
-        'dateOfBirth': dobController.text.trim(),
-        'country': selectedCountry.value ?? '',
-      };
+        // Update the Firestore document
+        await FirebaseFirestore.instance.doc(docPath).update(updatedData);
 
-      // Update the Firestore document
-      await FirebaseFirestore.instance.doc(docPath).update(updatedData);
-
-      Get.snackbar(
-        "Success",
-        "Profile updated successfully",
-        backgroundColor: Colors.green,
-      );
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to update profile: $e",
-        backgroundColor: Colors.red,
-      );
-    } finally {
-      loading.value = false; // Ensure loading is set to false in all cases
+        Get.snackbar(
+          "Success",
+          "Profile updated successfully",
+          backgroundColor: Colors.green,
+        );
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          "Failed to update profile: $e",
+          backgroundColor: Colors.red,
+        );
+      } finally {
+        loading.value = false; // Ensure loading is set to false in all cases
+      }
     }
   }
-}
 }

@@ -20,11 +20,7 @@ class PostLikeController extends GetxController {
   Future<void> _checkIfLiked() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
-      final likeRef = FirebaseFirestore.instance
-          .collection('posts')
-          .doc(postId)
-          .collection('likes')
-          .doc(userId);
+      final likeRef = FirebaseFirestore.instance.collection('posts').doc(postId).collection('likes').doc(userId);
 
       final docSnapshot = await likeRef.get();
       isLiked.value = docSnapshot.exists;
@@ -33,19 +29,16 @@ class PostLikeController extends GetxController {
 
   // Listen to the like count in real-time
   void _listenToLikeCount() {
-    FirebaseFirestore.instance
-        .collection('posts')
-        .doc(postId)
-        .snapshots()
-        .listen((snapshot) {
+    FirebaseFirestore.instance.collection('posts').doc(postId).snapshots().listen((snapshot) {
       if (snapshot.exists) {
-        likeCount.value = snapshot.data()?['likeCount'] ?? 0;
+        likeCount.value = snapshot.data()?['likes_count'] ?? 0;
       }
     });
   }
 
   // Toggle like/unlike status
   Future<void> toggleLike() async {
+    Get.log(postId);
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) return;
 
@@ -65,6 +58,6 @@ class PostLikeController extends GetxController {
     }
 
     // Update the like count
-    await postRef.update({'likeCount': likeCount.value});
+    await postRef.update({'likes_count': likeCount.value});
   }
 }

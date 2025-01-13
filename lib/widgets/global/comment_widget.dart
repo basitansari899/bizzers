@@ -1,8 +1,4 @@
-import 'dart:math';
-
-import 'package:flick_video_player/flick_video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:video_player/video_player.dart';
 
 import '../../models/comment_model.dart';
 import '../../utils/exports.dart';
@@ -17,31 +13,8 @@ class CommentWidget extends StatefulWidget {
 }
 
 class _CommentWidgetState extends State<CommentWidget> {
-  late FlickManager flickManager;
-  @override
-  void initState() {
-    super.initState();
-    if (widget.comment.type == CommentType.video) {
-      flickManager = FlickManager(
-        autoPlay: false,
-        videoPlayerController: VideoPlayerController.networkUrl(
-          Uri.parse(widget.comment.content),
-        ),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    if (widget.comment.type == CommentType.video) {
-      flickManager.flickControlManager!.pause();
-    }
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    int number = Random.secure().nextInt(60);
     return Container(
       padding: EdgeInsets.all(10),
       child: Row(
@@ -49,8 +22,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundImage: NetworkImage(
-                Faker.instance.image.image(height: 300 + number, width: 300 + number)), // First letter of the username
+            backgroundImage: NetworkImage(widget.comment.userPic), // First letter of the username
           ),
           SizedBox(width: 12),
           Expanded(
@@ -60,7 +32,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 Row(
                   children: [
                     Text(
-                      Faker.instance.name.fullName(),
+                      widget.comment.user,
                       style: GoogleFonts.manrope(
                         color: Color(0xFF191919),
                         fontSize: 14,
@@ -70,7 +42,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                     ),
                     const SizedBox(width: 5.83),
                     Text(
-                      'just now',
+                      _getTimeAgo(widget.comment.updateAt),
                       style: GoogleFonts.manrope(
                         color: Color(0x66191919),
                         fontSize: 14,
@@ -80,7 +52,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                   ],
                 ),
                 SizedBox(height: 4),
-                _buildCommentContent(widget.comment),
+                Text(
+                  widget.comment.content,
+                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                ),
                 SizedBox(height: 4),
                 Row(
                   children: [
@@ -111,41 +86,55 @@ class _CommentWidgetState extends State<CommentWidget> {
     );
   }
 
-  Widget _buildCommentContent(CommentModel comment) {
-    switch (comment.type) {
-      case CommentType.text:
-        return Text(
-          comment.content,
-          style: TextStyle(fontSize: 14, color: Colors.black87),
-        );
-      case CommentType.sticker:
-        return Image.network(
-          comment.content,
-          height: 60,
-          width: 60,
-          fit: BoxFit.cover,
-        );
-      // case CommentType.voice:
-      //   return VoiceMessage(
-      //     audioSrc:  comment.content,
-      //     played: false,
-      //     width: Get.width,
-      //     noiseHeight: 30,
-      //     noiseWidth: 150,
-      //     contactPlayIconBgColor: primaryColor.withOpacity(0.5),
-      //     waveBgColor: primaryColor,
-      //     waveColor: primaryColor,
-      //     me: false,
-      //     onPlay: () {},
-      //     header: {}, // Do something when voice played.
-      //   );
-      case CommentType.video:
-        return SizedBox(
-          width: Get.width * 0.6,
-          child: FlickVideoPlayer(
-            flickManager: flickManager,
-          ),
-        );
+  String _getTimeAgo(DateTime dateTime) {
+    Duration diff = DateTime.now().difference(dateTime);
+
+    if (diff.inSeconds < 60) {
+      return 'just now';
+    } else if (diff.inMinutes < 60) {
+      return '${diff.inMinutes} min ago';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours} hr ago';
+    } else {
+      return '${diff.inDays} day${diff.inDays > 1 ? 's' : ''} ago';
     }
   }
+
+  // Widget _buildCommentContent(CommentModel comment) {
+  //   switch (comment.commentType) {
+  //     case 'Text':
+  //       return Text(
+  //         comment.content,
+  //         style: TextStyle(fontSize: 14, color: Colors.black87),
+  //       );
+  //     case CommentType.sticker:
+  //       return Image.network(
+  //         comment.content,
+  //         height: 60,
+  //         width: 60,
+  //         fit: BoxFit.cover,
+  //       );
+  //     case CommentType.voice:
+  //       return VoiceMessage(
+  //         audioSrc:  comment.content,
+  //         played: false,
+  //         width: Get.width,
+  //         noiseHeight: 30,
+  //         noiseWidth: 150,
+  //         contactPlayIconBgColor: primaryColor.withOpacity(0.5),
+  //         waveBgColor: primaryColor,
+  //         waveColor: primaryColor,
+  //         me: false,
+  //         onPlay: () {},
+  //         header: {}, // Do something when voice played.
+  //       );
+  //     case CommentType.video:
+  //       return SizedBox(
+  //         width: Get.width * 0.6,
+  //         child: FlickVideoPlayer(
+  //           flickManager: flickManager,
+  //         ),
+  //       );
+  //   }
+  // }
 }

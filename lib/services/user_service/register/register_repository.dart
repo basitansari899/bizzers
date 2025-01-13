@@ -23,6 +23,7 @@ class RegisterRepository {
       final collection = firestore.collection("users").doc(uid).collection("profile").doc(uid);
 
       await collection.set(data.toJson());
+      await collection.set({'userId': uid});
     }
 
     return result;

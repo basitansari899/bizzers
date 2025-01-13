@@ -1,3 +1,5 @@
+import 'package:bizconnect/screens/home/controllers/profile_controller.dart';
+import 'package:bizconnect/services/user_service/profile/model/user_data.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -6,18 +8,26 @@ import '../../utils/exports.dart';
 bool profileB = false;
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String userId;
+  const ProfileScreen({super.key, required this.userId});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  ProfileController controller = Get.put(ProfileController());
   String currentTab = 'Posts';
+  UserData? userData;
+
+  Future<void> getUserData() async {
+    userData = await controller.getUserData(widget.userId);
+  }
 
   @override
   void initState() {
     profileB = !profileB;
+    getUserData();
     super.initState();
   }
 
@@ -89,32 +99,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: Get.width / 4 - 20,
                         height: 36,
                         alignment: Alignment.center,
-                        decoration: selected? ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(200),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 7.80,
-                              offset: Offset(0, 0),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ):null,
+                        decoration: selected
+                            ? ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(200),
+                                ),
+                                shadows: [
+                                  BoxShadow(
+                                    color: Color(0x3F000000),
+                                    blurRadius: 7.80,
+                                    offset: Offset(0, 0),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              )
+                            : null,
                         child: Text(
                           text,
                           style: selected
                               ? TextStyle(
-                            fontSize: 15.74,
-                            fontWeight: FontWeight.w600,
-                          )
+                                  fontSize: 15.74,
+                                  fontWeight: FontWeight.w600,
+                                )
                               : TextStyle(
-                            color: Color(0xFF7A7A7A),
-                            fontSize: 15.74,
-                            fontWeight: FontWeight.w500,
-                          ),
+                                  color: Color(0xFF7A7A7A),
+                                  fontSize: 15.74,
+                                  fontWeight: FontWeight.w500,
+                                ),
                         ),
                       );
                     }).toList(),
@@ -141,11 +153,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 childrenDelegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    String imageUrl = Faker.instance.image
-                        .image(width: 300 + index, height: 300 + index);
+                    String imageUrl = Faker.instance.image.image(width: 300 + index, height: 300 + index);
                     return ClipRRect(
-                        borderRadius: BorderRadius.circular(6.64),
-                        child: Image.network(imageUrl, fit: BoxFit.cover));
+                        borderRadius: BorderRadius.circular(6.64), child: Image.network(imageUrl, fit: BoxFit.cover));
                   },
                 )),
           ),
@@ -243,22 +253,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileImage() {
-    return Positioned(
-      top: 144,
-      left: 15,
-      child: Container(
-        width: 92,
-        height: 92,
-        decoration: ShapeDecoration(
-          shape: CircleBorder(
-              side: BorderSide(width: 1, color: Color(0xFFBA9551))),
-          image: DecorationImage(
-            image: AssetImage("assets/profile.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
+    return userData == null
+        ? CircularProgressIndicator()
+        : Positioned(
+            top: 144,
+            left: 15,
+            child: Container(
+              width: 92,
+              height: 92,
+              decoration: ShapeDecoration(
+                shape: CircleBorder(side: BorderSide(width: 1, color: Color(0xFFBA9551))),
+                image: DecorationImage(
+                  image: NetworkImage(userData!.userPic!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          );
   }
 
   Widget _buildProfileInfo() {
@@ -269,24 +280,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '@${Faker.instance.name.fullName()}',
+            userData?.fullName ?? "Full Name",
             style: TextStyle(
               color: Colors.black,
               fontSize: 16.88,
               fontWeight: FontWeight.w600,
             ),
           ),
-          Text('@${Faker.instance.name.firstName()}',
-              style: TextStyle(color: Color(0xFF3F3F3F), fontSize: 11.59)),
+          Text('@${userData?.userName ?? "username"}', style: TextStyle(color: Color(0xFF3F3F3F), fontSize: 11.59)),
           Text(
-            Faker.instance.company.companyName(),
-            style: TextStyle(
-                color: Color(0xFFDAA30A),
-                fontSize: 15.74,
-                fontWeight: FontWeight.w500),
+            "User Bio",
+            style: TextStyle(color: Color(0xFFDAA30A), fontSize: 15.74, fontWeight: FontWeight.w500),
           ),
-          Text('www.hscosmetics.com',
-              style: TextStyle(color: Colors.black, fontSize: 15.74)),
+          Text('www.hscosmetics.com', style: TextStyle(color: Colors.black, fontSize: 15.74)),
         ],
       ),
     );
@@ -311,10 +317,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildStatColumn(String stat, String label) {
     return Column(
       children: [
-        Text(stat,
-            style: TextStyle(fontSize: 17.4, fontWeight: FontWeight.w500)),
-        Text(label,
-            style: TextStyle(fontSize: 10.82, fontWeight: FontWeight.w500)),
+        Text(stat, style: TextStyle(fontSize: 17.4, fontWeight: FontWeight.w500)),
+        Text(label, style: TextStyle(fontSize: 10.82, fontWeight: FontWeight.w500)),
       ],
     );
   }
