@@ -3,12 +3,13 @@ import 'package:bizconnect/services/user_service/profile/model/user_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileController extends GetxController {
-  Future<UserData?> getUserData(String userId) async {
-    final userRef = FirebaseFirestore.instance.collection("users").doc(userId);
+  Rx<UserData?> userData = Rx(null);
+  Future<void> getUserData(String userId) async {
+    final userRef = FirebaseFirestore.instance.collection("users").doc(userId).collection('profile').doc(userId);
     final doc = await userRef.get();
     final userJson = doc.data();
     if (userJson != null) {
-      return UserData.fromJson(userJson);
+      userData.value  =  UserData.fromJson(userJson);
     } else {
       return null;
     }

@@ -1,5 +1,6 @@
 import 'package:bizconnect/screens/home/controllers/profile_controller.dart';
 import 'package:bizconnect/services/user_service/profile/model/user_data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -18,10 +19,11 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileController controller = Get.put(ProfileController());
   String currentTab = 'Posts';
-  UserData? userData;
+
 
   Future<void> getUserData() async {
-    userData = await controller.getUserData(widget.userId);
+    await controller.getUserData(widget.userId);
+   
   }
 
   @override
@@ -34,132 +36,188 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 345,
-            decoration: BoxDecoration(color: Colors.white),
-            child: Stack(
-              children: [
-                _buildHeaderBackground(),
-                _buildProfileImage(),
-                _buildProfileInfo(),
-                _buildStatsRow(),
-                _buildSettingsIcon(),
-                _buildBackButton(),
-              ],
-            ),
-          ),
-          Visibility(
-            visible: profileB,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 17),
-              width: Get.width,
-              height: 36.3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildGradientButton('Connect'),
-                  _buildOutlinedButton('Follow'),
-                  _buildOutlinedButton('Share'),
-                  _buildCircularButton(),
-                ],
+      body: GetBuilder<ProfileController>(
+        builder: (profileController) {
+          return Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 345,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Stack(
+                  children: [
+                    _buildHeaderBackground(),
+                    _buildProfileImage(profileController),
+                    _buildProfileInfo(profileController),
+                    _buildStatsRow(),
+                    _buildSettingsIcon(),
+                    _buildBackButton(),
+                  ],
+                ),
               ),
-            ),
-          ),
-          SizedBox(height: 10),
-          Divider(),
-          Visibility(
-            visible: profileB,
-            child: Column(
-              children: [
-                SizedBox(height: 10),
-                Container(
-                  height: 55,
+              Visibility(
+                visible: profileB,
+                child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 17),
-                  padding: EdgeInsets.symmetric(horizontal: 13),
                   width: Get.width,
-                  decoration: ShapeDecoration(
-                    color: Color(0xFFEFEFEF),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(200),
-                    ),
-                  ),
+                  height: 36.3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      "Posts",
-                      "Products",
-                      "Connects",
-                      "Likes",
-                    ].map((text) {
-                      bool selected = currentTab == text;
-                      return Container(
-                        width: Get.width / 4 - 20,
-                        height: 36,
-                        alignment: Alignment.center,
-                        decoration: selected
-                            ? ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(200),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 7.80,
-                                    offset: Offset(0, 0),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              )
-                            : null,
-                        child: Text(
-                          text,
-                          style: selected
-                              ? TextStyle(
-                                  fontSize: 15.74,
-                                  fontWeight: FontWeight.w600,
-                                )
-                              : TextStyle(
-                                  color: Color(0xFF7A7A7A),
-                                  fontSize: 15.74,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                        ),
-                      );
-                    }).toList(),
+                      _buildGradientButton('Connect'),
+                      _buildOutlinedButton('Follow'),
+                      _buildOutlinedButton('Share'),
+                      _buildCircularButton(),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Expanded(
-            child: GridView.custom(
-                padding: EdgeInsets.symmetric(horizontal: 17),
-                gridDelegate: SliverQuiltedGridDelegate(
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 13,
-                  crossAxisSpacing: 13,
-                  repeatPattern: QuiltedGridRepeatPattern.inverted,
-                  pattern: [
-                    QuiltedGridTile(3, 2),
-                    QuiltedGridTile(1, 1),
-                    QuiltedGridTile(1, 1),
-                    QuiltedGridTile(1, 2),
+              ),
+              SizedBox(height: 10),
+              Divider(),
+              Visibility(
+                visible: profileB,
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Container(
+                      height: 55,
+                      margin: EdgeInsets.symmetric(horizontal: 17),
+                      padding: EdgeInsets.symmetric(horizontal: 13),
+                      width: Get.width,
+                      decoration: ShapeDecoration(
+                        color: Color(0xFFEFEFEF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(200),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          "Posts",
+                          "Products",
+                          "Connects",
+                          "Likes",
+                        ].map((text) {
+                          bool selected = currentTab == text;
+                          return Container(
+                            width: Get.width / 4 - 20,
+                            height: 36,
+                            alignment: Alignment.center,
+                            decoration: selected
+                                ? ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(200),
+                                    ),
+                                    shadows: [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        blurRadius: 7.80,
+                                        offset: Offset(0, 0),
+                                        spreadRadius: 0,
+                                      )
+                                    ],
+                                  )
+                                : null,
+                            child: Text(
+                              text,
+                              style: selected
+                                  ? TextStyle(
+                                      fontSize: 15.74,
+                                      fontWeight: FontWeight.w600,
+                                    )
+                                  : TextStyle(
+                                      color: Color(0xFF7A7A7A),
+                                      fontSize: 15.74,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ],
                 ),
-                childrenDelegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    String imageUrl = Faker.instance.image.image(width: 300 + index, height: 300 + index);
-                    return ClipRRect(
-                        borderRadius: BorderRadius.circular(6.64), child: Image.network(imageUrl, fit: BoxFit.cover));
-                  },
-                )),
-          ),
-        ],
+              ),
+              SizedBox(height: 10),
+              StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('posts')
+          .where('userId', isEqualTo: widget.userId) // Filter posts by current user's ID
+          .snapshots(),
+      builder: (context, snapshot) {
+        // Check if the snapshot is loading or error occurred
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Something went wrong!'));
+        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('No posts available.'));
+        } else {
+          // Extract posts data from snapshot
+          final posts = snapshot.data!.docs;
+
+          return Expanded(
+            child: GridView.custom(
+              padding: EdgeInsets.symmetric(horizontal: 17),
+              gridDelegate: SliverQuiltedGridDelegate(
+                crossAxisCount: 4,
+                mainAxisSpacing: 13,
+                crossAxisSpacing: 13,
+                repeatPattern: QuiltedGridRepeatPattern.inverted,
+                pattern: [
+                  QuiltedGridTile(3, 2),
+                  QuiltedGridTile(1, 1),
+                  QuiltedGridTile(1, 1),
+                  QuiltedGridTile(1, 2),
+                ],
+              ),
+              childrenDelegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  // Assuming each post has a field 'imageUrl'
+                  final imageUrl = posts[index]['post_image']; // Replace with actual field name
+
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(6.64),
+                    child: Image.network(imageUrl, fit: BoxFit.cover),
+                  );
+                },
+                childCount: posts.length, // The number of posts from Firestore
+              ),
+            ),
+          );
+        }
+      },
+    )
+              // Expanded(
+              //   child: GridView.custom(
+              //       padding: EdgeInsets.symmetric(horizontal: 17),
+              //       gridDelegate: SliverQuiltedGridDelegate(
+              //         crossAxisCount: 4,
+              //         mainAxisSpacing: 13,
+              //         crossAxisSpacing: 13,
+                      
+              //         repeatPattern: QuiltedGridRepeatPattern.inverted,
+              //         pattern: [
+              //           QuiltedGridTile(3, 2),
+              //           QuiltedGridTile(1, 1),
+              //           QuiltedGridTile(1, 1),
+              //           QuiltedGridTile(1, 2),
+              //         ],
+              //       ),
+                    
+              //       childrenDelegate: SliverChildBuilderDelegate(
+              //         (context, index) {
+              //           String imageUrl = Faker.instance.image.image(width: 300 + index, height: 300 + index);
+              //           return ClipRRect(
+              //               borderRadius: BorderRadius.circular(6.64), child: Image.network(imageUrl, fit: BoxFit.cover));
+              //         },
+              //          childCount: 5,
+              //       )),
+              // ),
+            ],
+          );
+        }
       ),
     );
   }
@@ -252,8 +310,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileImage() {
-    return userData == null
+  Widget _buildProfileImage(profileControllers) {
+    return profileControllers.userData.value == null
         ? CircularProgressIndicator()
         : Positioned(
             top: 144,
@@ -264,7 +322,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: ShapeDecoration(
                 shape: CircleBorder(side: BorderSide(width: 1, color: Color(0xFFBA9551))),
                 image: DecorationImage(
-                  image: NetworkImage(userData!.userPic!),
+                  image: NetworkImage(controller.userData.value!.userPic ?? Faker.instance.image
+                .image(),),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -272,28 +331,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
   }
 
-  Widget _buildProfileInfo() {
-    return Positioned(
-      top: 251,
-      left: 15,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            userData?.fullName ?? "Full Name",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16.88,
-              fontWeight: FontWeight.w600,
+  Widget _buildProfileInfo(ProfileController profileControllers) {
+    return Obx(()=>
+       Positioned(
+        top: 251,
+        left: 15,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              profileControllers.userData.value?.fullName ?? "Full Name",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16.88,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          Text('@${userData?.userName ?? "username"}', style: TextStyle(color: Color(0xFF3F3F3F), fontSize: 11.59)),
-          Text(
-            "User Bio",
-            style: TextStyle(color: Color(0xFFDAA30A), fontSize: 15.74, fontWeight: FontWeight.w500),
-          ),
-          Text('www.hscosmetics.com', style: TextStyle(color: Colors.black, fontSize: 15.74)),
-        ],
+            Text('@${controller.userData.value?.userName ?? "username"}', style: TextStyle(color: Color(0xFF3F3F3F), fontSize: 11.59)),
+            Text(
+              "User Bio",
+              style: TextStyle(color: Color(0xFFDAA30A), fontSize: 15.74, fontWeight: FontWeight.w500),
+            ),
+            Text('www.hscosmetics.com', style: TextStyle(color: Colors.black, fontSize: 15.74)),
+          ],
+        ),
       ),
     );
   }

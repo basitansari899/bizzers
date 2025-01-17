@@ -244,7 +244,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     return CustomAppBar(
         height: 99.v,
         leading: IconButton(onPressed: (){
-          Get.to(() => BottomBarPage());
+          Get.offAll(() => BottomBarPage());
         }, icon: Icon(Icons.arrow_back_ios_new_outlined)),
         title: Container(
             margin: EdgeInsets.only(left: 45.h),

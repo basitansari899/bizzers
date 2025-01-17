@@ -93,9 +93,9 @@ class ProfileController extends GetxController with LoadingMixin {
     dobController.text = userData['dateOfBirth'] ?? '';
     userEmailController.text = userData['email'] ?? '';
     countryController.text = userData['country'] ?? '';
-    profilePic.value = userData['profilePic'];
+    profilePic.value = userData['profilePic'] ??"";
     selectedCountry.value = userData['country']; //
-    userNameFirstLetter.value = fullNameController.text[0].capitalize!;
+    userNameFirstLetter.value = fullNameController.text[0].capitalize??"";
   }
 
   Future<void> pickImage() async {

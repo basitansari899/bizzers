@@ -10,7 +10,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
       fullName: json['fullName'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
-      userId: json['userId'] as String,
+      userId: json['userId'] ?? "" as String,
       interest: (json['interest'] as List<dynamic>).map((e) => e as String).toList(),
       userPic: json['userPic'] as String?,
       userName: json['userName'] as String?,

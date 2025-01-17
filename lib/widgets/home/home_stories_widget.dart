@@ -27,17 +27,35 @@ class HomeStoriesWidget extends StatelessWidget {
           ),
         ),
         trayBuilder: (index) {
-          return AdvStoryTray(
-            shape: BoxShape.circle,
-            borderGradientColors: [
+          return Column(
+            children: [
+              Container(
+                height: 90,
+                width: 70,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                  image: DecorationImage(image: NetworkImage(
+                    Faker.instance.image
+                .image(height: 400 + index, width: 400 + index),
+                  ),
+                  fit: BoxFit.cover
+                  ),
+                  border: Border.all(color: primaryColor.withValues(alpha: 0.3),width: 3),
+                  gradient: LinearGradient(colors: 
+                  [
               primaryColor,
               primaryColor.withValues(alpha: 0.3),
               primaryColor.withValues(alpha: 0.6),
               primaryColor.withValues(alpha: 0.9),
-            ],
-            url: Faker.instance.image
-                .image(height: 400 + index, width: 400 + index),
-            username: Text(
+                  ]
+            
+                  ),
+                ),
+                
+               
+              ),
+              Text(
               Faker.instance.name.firstName(),
               textAlign: TextAlign.center,
               style: GoogleFonts.roboto(
@@ -45,8 +63,30 @@ class HomeStoriesWidget extends StatelessWidget {
                 color: color ?? Colors.black,
                 fontWeight: FontWeight.w400,
               ),
-            ),
+            ).paddingOnly(top: 5),
+            ],
           );
+          
+          // AdvStoryTray(
+          //   shape: BoxShape.rectangle,
+          //   borderGradientColors: [
+          //     primaryColor,
+          //     primaryColor.withValues(alpha: 0.3),
+          //     primaryColor.withValues(alpha: 0.6),
+          //     primaryColor.withValues(alpha: 0.9),
+          //   ],
+          //   url: Faker.instance.image
+          //       .image(height: 400 + index, width: 400 + index),
+          //   username: Text(
+          //     Faker.instance.name.firstName(),
+          //     textAlign: TextAlign.center,
+          //     style: GoogleFonts.roboto(
+          //       fontSize: 12.63,
+          //       color: color ?? Colors.black,
+          //       fontWeight: FontWeight.w400,
+          //     ),
+          //   ),
+          // );
         },
       ),
     );
